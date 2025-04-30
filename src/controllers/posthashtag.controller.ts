@@ -16,6 +16,18 @@ export class PostHashTagController{
         }
       }
 
+    //Find all post hashtag by id
+    async getPostHashtagById(req: Request, res: Response){
+        const id = parseInt(req.params.id);
+        try{
+            const post_hashtag = await this.posthashtagRepository.findOne({where: {id}, relations: ['post', 'hashtag']});
+            if(!post_hashtag) return res.status(404).json({message: 'Post hashtag not found'});
+            res.json(post_hashtag);
+        }
+        catch(e){
+            res.status(500).json({message: 'Error fetching post',e});
+        }
+    }        
     //Create post hashtag
     async createPostHashtag(req: Request,res: Response) {
         try{
@@ -27,9 +39,9 @@ export class PostHashTagController{
           res.status(500).json({message: 'Error creating post-hashtag link',e});
         }
       }
-      
+
     //Delete post hashtag
-    async delete(req: Request,res: Response) {
+    async deletePostHashtag(req: Request,res: Response) {
         const id = parseInt(req.params.id);
         try {
           const result = await this.posthashtagRepository.delete(id);

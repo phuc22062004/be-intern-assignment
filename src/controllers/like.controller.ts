@@ -15,20 +15,7 @@ export class LikeController{
             res.status(500).json({message: 'Error fetching likes', e});
         }
     }
-
-    //Find like by id
-    async getLikeById(req: Request, res: Response){
-        try{
-            const id = parseInt(req.params.id);
-            const like = await this.likeRepository.findOne({where: {id}, relations: ['user', 'post']});
-            if(!like) return res.status(404).json({message: 'Like not found'});
-            res.json(like);
-        }
-        catch(e){
-            return res.status(500).json({message: 'Error fetching like', e});
-        }
-    }
-
+    
     //Create like
     async createLike(req: Request, res: Response){
         try{

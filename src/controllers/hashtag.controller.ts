@@ -41,6 +41,23 @@ export class HashtagController{
         }
     }
 
+    // Update hashtag
+    async updateHashtag(req: Request, res: Response) {
+        const id = parseInt(req.params.id);
+        try {
+            const existingHashtag = await this.hashtagRepository.findOne({where: {id}});
+            if (!existingHashtag) {
+                return res.status(404).json({ message: 'Hashtag not found'});
+            }
+            const updatedHashtag = this.hashtagRepository.merge(existingHashtag,req.body);
+            const result = await this.hashtagRepository.save(updatedHashtag);
+            res.json(result);
+        } 
+        catch(e){
+            res.status(500).json({message: 'Error updating hashtag',e});
+        }
+    }
+
     //Delete hashtag
     async deleteHashtag(req: Request, res: Response){
         const id = parseInt(req.params.id);

@@ -12,7 +12,7 @@ export class FollowController{
         res.json(follows);
       } 
       catch (e){
-        res.status(500).json({message: 'e fetching follows',e});
+        res.status(500).json({message: 'Error fetching follows',e});
       }
     }
 
@@ -24,7 +24,7 @@ export class FollowController{
         res.status(201).json(result);
       }
       catch(e){
-        res.status(500).json({message: 'e creating follow',e});
+        res.status(500).json({message: 'Error creating follow',e});
       }
     }
     
@@ -39,5 +39,31 @@ export class FollowController{
       catch(e){
         res.status(500).json({message: 'Error deleting follow',e});
       }
+    }
+
+    //Get followers of a user
+    async getFollowers(req: Request, res: Response) {
+        const userId = parseInt(req.params.id);
+        try {
+            const followers = await this.followRepository.find({
+                where: { following: { id: userId } },
+                relations: ['follower'],
+            });
+            res.json(followers.map(f => f.follower));
+        } catch (e) {
+            res.status(500).json({ message: 'Error fetching followers', e });
+        }
+    }
+
+    //Get followings of a user
+    async getFollowings(req: Request,res: Response) {
+        const userId = parseInt(req.params.id);
+        try {
+            const followings = await this.followRepository.find({where: { follower: { id: userId } },relations: ['following'],});
+            res.json(followings.map(f => f.following));
+        } 
+        catch(e) {
+            res.status(500).json({message: 'Error fetching followings',e});
+        }
     }
 }

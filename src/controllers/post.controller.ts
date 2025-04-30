@@ -5,7 +5,7 @@ import { AppDataSource } from "../data-source";
 
 export class PostController {
     private postRepository = AppDataSource.getRepository(Post);
-    
+
     //Get all post
     async getAllPost(req: Request, res: Response){
         try{
@@ -55,7 +55,7 @@ export class PostController {
             res.json(result);
         }
         catch(e){
-            res.status(500).json({message: 'Error updating post'});
+            res.status(500).json({message: 'Error updating post',e});
         }
     }
 
@@ -65,7 +65,7 @@ export class PostController {
         try {
             const result = await this.postRepository.delete(id);
             if(result.affected === 0){
-                return res.status(404).json({meesage: 'Post not found'});
+                return res.status(404).json({message: 'Post not found'});
             }
             res.status(204).send();
         }
