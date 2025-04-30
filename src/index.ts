@@ -2,6 +2,13 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { userRouter } from './routes/user.routes';
 import { AppDataSource } from './data-source';
+import { postRouter } from './routes/post.routes';
+import { followRouter } from './routes/follow.routes';
+import { likeRouter } from './routes/like.routes';
+import { hashtagRouter } from './routes/hashtag.routes';
+import { postHashtagRouter } from './routes/post_hashtag.routes';
+import { customRouter } from './routes/custom.routes';
+
 
 dotenv.config();
 
@@ -21,7 +28,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRouter);
-
+app.use('/api/post',postRouter);
+app.use('/api/like',likeRouter);
+app.use('/api/posthashtag',postHashtagRouter);
+app.use('/api/hashtag',hashtagRouter);
+app.use('/api/follow',followRouter);
+app.use('/api',customRouter);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
