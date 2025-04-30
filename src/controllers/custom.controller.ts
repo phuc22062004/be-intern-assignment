@@ -12,8 +12,6 @@ export class CustomController {
   private followRepo = AppDataSource.getRepository(Follow);
   private hashtagRepo = AppDataSource.getRepository(Post_hashtag);
   private likeRepo = AppDataSource.getRepository(Like);
-  private userRepo = AppDataSource.getRepository(User);
-
 
   async getFeed(req: Request, res: Response) {
     const currentUserId = parseInt(req.query.userId as string);
@@ -21,7 +19,7 @@ export class CustomController {
     const offset = parseInt(req.query.offset as string) || 0;
 
     if (!currentUserId) {
-      return res.status(400).json({ message: 'Missing userId' });
+      return res.status(400).json({message: 'Missing userId'});
     }
 
     try {
@@ -41,13 +39,14 @@ export class CustomController {
         take: limit,
         skip: offset,
       });
-      const formatted = posts.map(post => ({
+      const formatted = posts.map(post =>({
         id: post.id,
         content: post.content,
         createdAt: post.createdAt,
         author: {
           id: post.user.id,
-          name: post.user.firstName,
+          first_name: post.user.firstName,
+          last_name: post.user.lastName,
           email: post.user.email,
         },
         likeCount: post.likes?.length || 0,
@@ -55,8 +54,9 @@ export class CustomController {
       }));
 
       res.json(formatted);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching feed', error });
+    } 
+    catch (e) {
+      res.status(500).json({message: 'Error fetching feed',e});
     }
   }
   async getPersonalizedFeed(req: Request, res: Response) {
@@ -65,12 +65,12 @@ export class CustomController {
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const follows = await this.followRepo.find({ where: { followerId: currentUserId } });
+      const follows = await this.followRepo.find({where:{ followerId: currentUserId }});
       const followedUserIds = follows.map(f => f.followingId);
 
       const posts = await this.postRepo.find({
-        where: { userId: In(followedUserIds) },
-        order: { createdAt: 'DESC' },
+        where: {userId: In(followedUserIds)},
+        order: {createdAt: 'DESC' },
         relations: ['user', 'likes', 'post_hashtags', 'post_hashtags.hashtag'],
         skip: offset,
         take: limit,
@@ -82,7 +82,8 @@ export class CustomController {
         createdAt: post.createdAt,
         author: {
           id: post.user.id,
-          name: post.user.firstName,
+          first_name: post.user.firstName,
+          last_name: post.user.lastName,
           email: post.user.email,
         },
         likeCount: post.likes.length,
@@ -90,8 +91,9 @@ export class CustomController {
       }));
 
       res.json(formatted);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching feed', error });
+    } 
+    catch(e){
+      res.status(500).json({message: 'Error fetching feed',e});
     }
   }
 
@@ -118,7 +120,8 @@ export class CustomController {
         createdAt: post.createdAt,
         author: {
           id: post.user.id,
-          name: post.user.firstName,
+          first_name: post.user.firstName,
+          last_name: post.user.lastName,
           email: post.user.email,
         },
         likeCount: post.likes.length,
@@ -198,8 +201,9 @@ export class CustomController {
       activities.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
       res.json({ total: activities.length, data: activities.slice(offset, offset + limit) });
 
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching user activity', error });
+    } 
+    catch(e) {
+      res.status(500).json({ message: 'Error fetching user activity',e});
     }
   }
 }
