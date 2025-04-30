@@ -5,13 +5,13 @@ export const followRouter = Router();
 const followController = new FollowController();
 
 //Follow a user
-followRouter.post('/', followController.createFollow.bind(followController));
+followRouter.post('/',followController.createFollow.bind(followController));
 
-//Unfollow a user
-followRouter.delete('/', followController.deleteFollow.bind(followController));
+//Unfollow (delete by follow ID)
+followRouter.delete('/:id',followController.deleteFollow.bind(followController));
 
 //Get followers of a user
-followRouter.get('/followers/:id', followController.getFollowers.bind(followController));
+followRouter.get('/followers/:id',followController.getFollowers.bind(followController));
 
 //Get followings of a user
-followRouter.get('/followings/:id', followController.getFollowings.bind(followController));
+followRouter.get('/followings/:id',followController.getFollowings.bind(followController));
