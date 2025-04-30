@@ -7,13 +7,13 @@ const customController = new CustomController();
 const followController = new FollowController();
 
 //Personalized content feed
-customRouter.get('/feed', customController.getFeed.bind(CustomController));
+customRouter.get('/feed', customController.getFeed.bind(customController));
 
 //Find posts by hashtag
-customRouter.get('/posts/hashtag/:tag', customController.getPostsByHashtag.bind(CustomController));
+customRouter.get('/posts/hashtag/:tag', customController.getPostsByHashtag.bind(customController));
 
 //Get user's followers 
 customRouter.get('/users/:id/followers', followController.getFollowers.bind(followController));
 
 //View user activity history 
-customRouter.get('/users/:id/activity', customController.getUserActivity.bind(CustomController));
+customRouter.get('/users/:id/activity', customController.getUserActivity.bind(customController));
