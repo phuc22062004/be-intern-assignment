@@ -18,13 +18,30 @@ export class FollowController{
 
     //Create follow
     async createFollow(req: Request, res: Response) {
-      try{
+      try {
+        const {follower, following} = req.body;
+        if (!follower?.id || !following?.id) {
+          return res.status(400).json({ message: 'Missing follower or following id' });
+        }
+        if (follower.id === following.id) {
+          return res.status(400).json({ message: 'You cannot follow yourself' });
+        }
+        //Check if follow already exists
+        const existing = await this.followRepository.findOne({
+          where: {
+            follower: { id: follower.id },
+            following: { id: following.id },
+          },
+        });
+        if (existing) {
+          return res.status(400).json({ message: 'Already following this user' });
+        }
         const follow = this.followRepository.create(req.body);
         const result = await this.followRepository.save(follow);
         res.status(201).json(result);
-      }
+      } 
       catch(e){
-        res.status(500).json({message: 'Error creating follow',e});
+        res.status(500).json({ message: 'Error creating follow', e });
       }
     }
     
