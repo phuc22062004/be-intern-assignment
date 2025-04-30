@@ -7,6 +7,7 @@ import {
     CreateDateColumn,
     Unique,
     JoinColumn,
+    DeleteDateColumn,
 
 } from "typeorm"
 
@@ -34,4 +35,7 @@ export class Follow{
     
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt?: Date;
 }
